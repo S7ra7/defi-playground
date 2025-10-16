@@ -25,3 +25,31 @@ python -m venv .venv
 source .venv/bin/activate # Windows: .venv\\Scripts\\activate
 pip install -r requirements.txt
 pytest -q
+
+## Hızlı Başlangıç (Yerelde)
+```bash
+python -m venv .venv
+# Windows: .venv\Scripts\activate
+# macOS/Linux: source .venv/bin/activate
+pip install -r requirements.txt
+pytest -q
+# (Grafikler için)
+pip install matplotlib numpy
+python notebooks/01_amm_simulasyonu.py
+# çıktı: docs/plots/ klasöründe PNG dosyaları
+
+
+> `requirements.txt`’i testler için olduğu gibi bırakabilirsin (pytest, numpy). Grafikleri yerelde çalıştırmak istersen `matplotlib` kurarsın; CI’da grafikleri çalıştırmıyoruz.
+
+---
+
+# 4) Sıradaki adım
+1. Yukarıdaki **üç dosyayı** ekleyip **commit** et.  
+2. **Actions** sekmesinde testlerin yeşil geçtiğini gör (yeni testler de koşacak).  
+3. İstersen bir sonraki turda:
+   - **ZK** klasörüne basit bir “sıfır bilgi eşik ispatı (kavram)” notu ve “kaynaklar”,
+   - **FHE** klasörüne “şifreli toplama/karşılaştırma” örnek pseudo-code,
+   - **Parallel** klasörüne küçük `concurrent.futures` örneği
+   ekleyelim.
+
+Önce bu adımı tamamla; sonuç “✅ yeşil” olunca haber ver, sıradaki modülleri de aynı hızda ekleyelim.
