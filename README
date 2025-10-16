@@ -1,14 +1,14 @@
-# 🧠 DeFi Playground  
-
-![Build Status](https://img.shields.io/github/actions/workflow/status/S7ra7/defi-playground/.github/workflows/ci.yml?branch=main&label=Build)
-![License](https://img.shields.io/badge/License-MIT-blue.svg)
-![Python](https://img.shields.io/badge/Python-3.11+-green.svg)
-![Tests](https://img.shields.io/badge/Tests-Pytest%20✓-brightgreen)
-[![Docs](https://img.shields.io/badge/Docs-Overview-blue)](./docs/overview.md)
+# 🧠 DeFi Playground
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/S7ra7/defi-playground/main/docs/banner.svg" width="800" alt="DeFi Playground Banner">
+  <img src="https://raw.githubusercontent.com/USERNAME/defi-playground/main/docs/banner.svg" width="800" alt="DeFi Playground Banner">
 </p>
+
+![Build Status](https://img.shields.io/github/actions/workflow/status/USERNAME/defi-playground/.github/workflows/ci.yml?branch=main&label=Build)
+![License](https://img.shields.io/badge/License-MIT-blue.svg)
+![Python](https://img.shields.io/badge/Python-3.11%2B-green.svg)
+![Tests](https://img.shields.io/badge/Tests-Pytest%20%E2%9C%93-brightgreen)
+[![Docs](https://img.shields.io/badge/Docs-Overview-blue)](./docs/overview.md)
 
 Eğitim amaçlı modüler bir **DeFi Simülasyon Laboratuvarı**.  
 AMM, Lending, ZK, FHE ve Paralel İşleme prensiplerini sade Python örnekleriyle bir araya getirir.  
