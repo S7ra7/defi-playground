@@ -1,0 +1,27 @@
+# DeFi-Playground (TR)
+
+
+Basit, anlaşılır örneklerle DeFi kavramlarına giriş: AMM, LP, lending, ZK ve FHE.
+
+
+## Amaç
+- Teoriyi *çalışan küçük örneklerle* öğretmek
+- Her modül bağımsız, 10-15 dakikada bitecek düzeyde
+
+
+## İçerik
+- `amm/`: Sabit çarpım AMM (x*y=k) simülatörü (Python) ve kısa notlar
+- `lending/`: Basit teminat/likidasyon mantığı
+- `zk/`: ZK temelleri, dev circuit kavramları
+- `fhe/`: Fully Homomorphic Encryption kavramsal giriş
+- `parallel/`: Python ile paralel/vektörize hızlandırma notları
+- `solidity/`: AMM iskeleti (öğretim amaçlı)
+- `tests/`: `pytest` ile birim testleri
+
+
+## Hızlı Başlangıç
+```bash
+python -m venv .venv
+source .venv/bin/activate # Windows: .venv\\Scripts\\activate
+pip install -r requirements.txt
+pytest -q
