@@ -10,8 +10,9 @@ def test_borrow_and_limits():
     assert not p.can_borrow_more(20000)
 
 def test_interest_and_liquidation():
-    p = Position(collateral=5, debt=5000, price=1000, ltv=0.7, liq_threshold=0.8, rate_apy=0.10)
-    assert p.is_liquidatable()
+    p = Position(collateral=5, debt=3000, price=1000, ltv=0.7, liq_threshold=0.8, rate_apy=0.10)
+    # 5*1000*0.8 = 4000 eşik; 3000 < 4000 → likide değil
+    assert not p.is_liquidatable()
 
     p.update_price(800)              # teminat değeri 4000
     assert p.is_liquidatable()
