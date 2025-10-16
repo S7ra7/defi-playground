@@ -1,7 +1,7 @@
 # 🧠 DeFi Playground
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/S7ra7/defi-playground/main/docs/banner.svg" width="800" alt="DeFi Playground Banner">
+  <img src="https://raw.githubusercontent.com/S7ra7/defi-playground/main/docs/banner_glow.svg" width="800" alt="DeFi Playground Banner">
 </p>
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/USERNAME/defi-playground/.github/workflows/ci.yml?branch=main&label=Build)
@@ -40,3 +40,9 @@ flowchart TD
   A --> D[ZK Proofs]
   D --> E[FHE Privacy Layer]
   E --> F[DeFi Playground Results]
+
+---
+
+<p align="center">
+  <sub>🚀 Built with ❤️ by <a href="https://github.com/S7ra7">S7ra7</a> • Educational use only • MIT License</sub>
+</p>
