@@ -16,4 +16,10 @@ def test_liquidity_flow():
     assert math.isclose(amm.total_liquidity, liq0 + minted, rel_tol=1e-6)
     dx, dy = amm.remove_liquidity(minted)
     assert dx > 0 and dy > 0
-
+def test_slippage_and_impact():
+    amm = ConstantProductAMM(1000, 1000)
+    impact = amm.get_price_impact(100)
+    slip = amm.estimate_slippage(100)
+    assert impact > 0
+    assert slip > 0
+    assert abs(impact - slip) < 5  # yakın olmalı
