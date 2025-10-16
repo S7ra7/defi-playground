@@ -11,16 +11,17 @@ def test_borrow_and_limits():
 
 def test_interest_and_liquidation():
     p = Position(collateral=5, debt=3000, price=1000, ltv=0.7, liq_threshold=0.8, rate_apy=0.10)
-    # 5*1000*0.8 = 4000 eşik; 3000 < 4000 → likide değil
-    assert not p.is_liquidatable()
+    assert not p.is_liquidatable()  # 3000 < 4000
 
-    p.update_price(800)              # teminat değeri 4000
+    # Fiyat yeterince düşerse likidasyon başlar
+    p.update_price(700)             # teminat değeri = 3500, eşik = 2800, 3000 > 2800 -> likidasyon
     assert p.is_liquidatable()
 
-    # Borcu yeterince düşür: eşik 3200 olduğundan 3000'e inelim
-    p.repay(2000)                    # 5000 -> 3000
-    assert p.debt == 3000
-    assert not p.is_liquidatable()   # 3000 < 3200, artık güvende
+    # Borcu azaltınca kurtarabilir
+    p.repay(500)                    # debt: 2500
+    assert p.debt == 2500
+    assert not p.is_liquidatable()  # artık güvenli
 
+    # Faiz eklendiğinde yeniden riskli hale gelebilir
     p.accrue_interest(1.0)
-    assert p.debt > 3000
+    assert p.debt > 2500
