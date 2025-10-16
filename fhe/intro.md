@@ -27,3 +27,15 @@ Bu sayede bir bulut servisi, kullanıcının verisini hiç görmeden hesaplama y
 | Şifreli veride işlem | ❌ | ✅ |
 | Hesaplama hızı | Çok hızlı | Yavaş (ama gelişiyor) |
 | Gizlilik seviyesi | Orta | Çok yüksek |
+
+# Fully Homomorphic Encryption (FHE)
+
+FHE, veriyi şifre çözmeden **üzerinde işlem yapmaya** izin verir.
+Örnek: x ve y şifreli haldeyken toplama yapılır, sonuç çözüldüğünde x+y elde edilir.
+
+## Kullanım alanları
+- Gizli emir/pozisyon içeren DeFi tasarımları
+- Sağlık/finans verilerinde gizlilik
+- ML modellerinde gizli veriyle tahmin
+
+> Not: Gerçek FHE kütüphaneleri (BFV/CKKS vb.) ağırdır; bu repo eğitim amaçlıdır.
