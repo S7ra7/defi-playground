@@ -1,0 +1,20 @@
+<svg width="1000" height="260" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
+      <stop offset="0%" stop-color="#18C964"/>
+      <stop offset="50%" stop-color="#1DA1F2"/>
+      <stop offset="100%" stop-color="#FF3B30"/>
+    </linearGradient>
+    <style>
+      .title { font: bold 48px 'Segoe UI', sans-serif; fill: url(#grad); }
+      .subtitle { font: 22px 'Segoe UI', sans-serif; fill: #ffffff; }
+      .bg { fill: #0D1117; }
+      .border { stroke: #30363D; stroke-width: 2; fill: none; }
+    </style>
+  </defs>
+  <rect class="bg" width="1000" height="260" rx="16"/>
+  <rect class="border" x="1" y="1" width="998" height="258" rx="15"/>
+  <text x="60" y="115" class="title">DeFi Playground</text>
+  <text x="64" y="165" class="subtitle">AMM · Lending · ZK · FHE · Parallel · CI/CD</text>
+  <text x="64" y="210" class="subtitle">by S7ra7</text>
+</svg>
