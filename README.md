@@ -36,11 +36,11 @@ GitHub Actions ile her commit sonrası otomatik test akışı:
 ## 🧠 Diyagram
 ```mermaid
 flowchart TD
-    A[AMM] --> B[Lending]
-    B --> C[Parallel]
-    A --> D[ZK Proofs]
-    D --> E[FHE Privacy Layer]
-    E --> F[DeFi Playground Results]
+  A[AMM] --> B[Lending]
+  B --> C[Parallel]
+  A --> D[ZK Proofs]
+  D --> E[FHE Privacy Layer]
+  E --> F[DeFi Playground Results]
 ---
 ## ✅ Son adımlar
 1. Dosyayı kaydet → `Commit changes`  
