@@ -1,55 +1,18 @@
-# DeFi-Playground (TR)
+# 🧠 DeFi Playground  
 
-
-Basit, anlaşılır örneklerle DeFi kavramlarına giriş: AMM, LP, lending, ZK ve FHE.
-
-
-## Amaç
-- Teoriyi *çalışan küçük örneklerle* öğretmek
-- Her modül bağımsız, 10-15 dakikada bitecek düzeyde
-
-
-## İçerik
-- `amm/`: Sabit çarpım AMM (x*y=k) simülatörü (Python) ve kısa notlar
-- `lending/`: Basit teminat/likidasyon mantığı
-- `zk/`: ZK temelleri, dev circuit kavramları
-- `fhe/`: Fully Homomorphic Encryption kavramsal giriş
-- `parallel/`: Python ile paralel/vektörize hızlandırma notları
-- `solidity/`: AMM iskeleti (öğretim amaçlı)
-- `tests/`: `pytest` ile birim testleri
-
-
-## Hızlı Başlangıç
-```bash
-python -m venv .venv
-source .venv/bin/activate # Windows: .venv\\Scripts\\activate
-pip install -r requirements.txt
-pytest -q
-
-## Hızlı Başlangıç (Yerelde)
-```bash
-python -m venv .venv
-# Windows: .venv\Scripts\activate
-# macOS/Linux: source .venv/bin/activate
-pip install -r requirements.txt
-pytest -q
-# (Grafikler için)
-pip install matplotlib numpy
-python notebooks/01_amm_simulasyonu.py
-# çıktı: docs/plots/ klasöründe PNG dosyaları
-
-
-> `requirements.txt`’i testler için olduğu gibi bırakabilirsin (pytest, numpy). Grafikleri yerelde çalıştırmak istersen `matplotlib` kurarsın; CI’da grafikleri çalıştırmıyoruz.
+Eğitim amaçlı modüler bir **DeFi Simülasyon Laboratuvarı**.  
+AMM, Lending, ZK, FHE ve Paralel İşleme prensiplerini sade Python örnekleriyle bir araya getirir.  
 
 ---
 
-# 4) Sıradaki adım
-1. Yukarıdaki **üç dosyayı** ekleyip **commit** et.  
-2. **Actions** sekmesinde testlerin yeşil geçtiğini gör (yeni testler de koşacak).  
-3. İstersen bir sonraki turda:
-   - **ZK** klasörüne basit bir “sıfır bilgi eşik ispatı (kavram)” notu ve “kaynaklar”,
-   - **FHE** klasörüne “şifreli toplama/karşılaştırma” örnek pseudo-code,
-   - **Parallel** klasörüne küçük `concurrent.futures` örneği
-   ekleyelim.
+## 🚀 Özellikler
 
-Önce bu adımı tamamla; sonuç “✅ yeşil” olunca haber ver, sıradaki modülleri de aynı hızda ekleyelim.
+✅ **AMM (Automated Market Maker)** – likidite havuzu & slipaj hesaplama  
+✅ **Lending Protocol** – teminat, borç ve likidasyon simülasyonu  
+✅ **ZK Proofs (Zero Knowledge)** – bilgiyi ifşa etmeden doğrulama  
+✅ **FHE (Fully Homomorphic Encryption)** – şifreli veri üzerinde işlem  
+✅ **Parallel Processing** – batch işlemlerle verimlilik artırımı  
+
+---
+
+## 🧩 Modül Yapısı
