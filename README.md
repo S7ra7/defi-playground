@@ -1,7 +1,7 @@
 # 🧠 DeFi Playground
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/USERNAME/defi-playground/main/docs/banner.svg" width="800" alt="DeFi Playground Banner">
+  <img src="https://raw.githubusercontent.com/S7ra7/defi-playground/main/docs/banner.svg" width="800" alt="DeFi Playground Banner">
 </p>
 
 ![Build Status](https://img.shields.io/github/actions/workflow/status/USERNAME/defi-playground/.github/workflows/ci.yml?branch=main&label=Build)
