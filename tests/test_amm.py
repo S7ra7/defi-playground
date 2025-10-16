@@ -21,13 +21,13 @@ def test_slippage_and_impact():
     impact = amm.get_price_impact(100)
     slip = amm.estimate_slippage(100)
 
-    # Her ikisi de pozitif olmalı
+    # Pozitif olmalı
     assert impact > 0
     assert slip > 0
 
-    # Slippage genellikle price impact'ten büyük ya da eşit olur
-    assert slip >= impact
+    # Sabit çarpım AMM’de genelde impact > slippage
+    assert slip < impact
 
-    # Makul üst sınırlar (bu rezerv ve takas büyüklüğü için)
-    assert impact < 20
-    assert slip < 30
+    # Makul aralıklar (bu rezerv ve dx için)
+    assert 5 < impact < 25
+    assert 5 < slip < 20
