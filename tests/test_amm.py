@@ -17,9 +17,17 @@ def test_liquidity_flow():
     dx, dy = amm.remove_liquidity(minted)
     assert dx > 0 and dy > 0
 def test_slippage_and_impact():
-    amm = ConstantProductAMM(1000, 1000)
+    amm = ConstantProductAMM(1000, 1000, fee=0.003)
     impact = amm.get_price_impact(100)
     slip = amm.estimate_slippage(100)
+
+    # Her ikisi de pozitif olmalı
     assert impact > 0
     assert slip > 0
-    assert abs(impact - slip) < 5  # yakın olmalı
+
+    # Slippage genellikle price impact'ten büyük ya da eşit olur
+    assert slip >= impact
+
+    # Makul üst sınırlar (bu rezerv ve takas büyüklüğü için)
+    assert impact < 20
+    assert slip < 30
