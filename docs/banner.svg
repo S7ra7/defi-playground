@@ -1,20 +1,54 @@
 <svg width="1000" height="260" viewBox="0 0 1000 260" xmlns="http://www.w3.org/2000/svg">
   <defs>
+    <!-- Gradient -->
     <linearGradient id="grad" x1="0" y1="0" x2="100%" y2="0">
-      <stop offset="0%" stop-color="#18C964"/>
-      <stop offset="50%" stop-color="#1DA1F2"/>
-      <stop offset="100%" stop-color="#FF3B30"/>
+      <stop offset="0%" stop-color="#22d3ee"/>
+      <stop offset="50%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#f472b6"/>
     </linearGradient>
+
+    <!-- Subtle grid -->
+    <pattern id="grid" width="24" height="24" patternUnits="userSpaceOnUse">
+      <path d="M24 0H0V24" fill="none" stroke="#30363d" stroke-width="1"/>
+    </pattern>
+
+    <!-- Soft glow filter -->
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
     <style>
-      .title { font: bold 48px 'Segoe UI', sans-serif; fill: url(#grad); }
-      .subtitle { font: 22px 'Segoe UI', sans-serif; fill: #ffffff; }
       .bg { fill: #0D1117; }
-      .border { stroke: #30363D; stroke-width: 2; fill: none; }
+      .panel { fill: #0f1420; stroke: #30363D; stroke-width: 1.5; }
+      .title { font: 700 48px 'Segoe UI', system-ui, -apple-system, sans-serif; fill: url(#grad); filter: url(#glow); }
+      .subtitle { font: 600 20px 'Segoe UI', system-ui, sans-serif; fill: #AAB4BF; }
+      .chip { fill: rgba(255,255,255,0.05); stroke: #2a2f3a; stroke-width: 1; }
+      .chipText { font: 600 14px 'Segoe UI', system-ui, sans-serif; fill: #cbd5e1; }
     </style>
   </defs>
-  <rect class="bg" width="1000" height="260" rx="16"/>
-  <rect class="border" x="1" y="1" width="998" height="258" rx="15"/>
-  <text x="60" y="115" class="title">DeFi Playground</text>
-  <text x="64" y="165" class="subtitle">AMM · Lending · ZK · FHE · Parallel · CI/CD</text>
-  <text x="64" y="210" class="subtitle">by S7ra7</text>
+
+  <!-- Background -->
+  <rect class="bg" width="1000" height="260"/>
+  <rect x="8" y="8" width="984" height="244" rx="18" class="panel"/>
+  <rect x="8" y="8" width="984" height="244" rx="18" fill="url(#grid)" opacity="0.25"/>
+
+  <!-- Title -->
+  <text x="64" y="120" class="title">DeFi Playground</text>
+  <text x="66" y="160" class="subtitle">AMM · Lending · ZK · FHE · Parallel · CI/CD</text>
+
+  <!-- Chips -->
+  <g transform="translate(64,182)">
+    <rect class="chip" x="0" y="-18" rx="10" width="110" height="32"/>
+    <text class="chipText" x="16" y="4">Open Source</text>
+
+    <rect class="chip" x="126" y="-18" rx="10" width="84" height="32"/>
+    <text class="chipText" x="142" y="4">Python</text>
+
+    <rect class="chip" x="226" y="-18" rx="10" width="140" height="32"/>
+    <text class="chipText" x="242" y="4">GitHub Actions</text>
+  </g>
 </svg>
