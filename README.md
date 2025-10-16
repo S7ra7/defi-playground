@@ -34,18 +34,9 @@ GitHub Actions ile her commit sonrası otomatik test akışı:
 > **Amaç:** Her modülün tek başına çalışabilir ve test edilebilir olması.
 ---
 ## 🧠 Diyagram
-```mermaid
 flowchart TD
   A[AMM] --> B[Lending]
   B --> C[Parallel]
   A --> D[ZK Proofs]
   D --> E[FHE Privacy Layer]
   E --> F[DeFi Playground Results]
----
-## ✅ Son adımlar
-1. Dosyayı kaydet → `Commit changes`  
-2. Actions sekmesinde yeşil check görürsen proje **tam entegre olmuş** demektir.  
-3. (İstersen) sana özel GitHub Pages veya `docs/` içeriğinden **görsel bir dokümantasyon sayfası** da yapabiliriz.
----
-Hazırsan bu adımdan sonra birlikte bir **README rozeti** (ör. build status, license, vs) ekleyip repo’yu profesyonel hale getirelim.  
-Eklemek ister misin?
