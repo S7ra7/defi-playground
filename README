@@ -5,10 +5,7 @@
 ![Tests](https://img.shields.io/badge/Tests-Pytest%20✓-brightgreen)
 [![Docs](https://img.shields.io/badge/Docs-Overview-blue)](./docs/overview.md)
 
-<p align="center">
-  <img src="./docs/banner.svg" width="800" alt="DeFi Playground Banner">
-</p>
-
+![DeFi Playground Banner](https://raw.githubusercontent.com/S7ra7/defi-playground/main/docs/banner.svg)
 
 Eğitim amaçlı modüler bir **DeFi Simülasyon Laboratuvarı**.  
 AMM, Lending, ZK, FHE ve Paralel İşleme prensiplerini sade Python örnekleriyle bir araya getirir.  
