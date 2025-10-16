@@ -74,4 +74,28 @@ class ConstantProductAMM:
         self.k = self.x * self.y
         self.total_liquidity -= share
         return dx, dy
+    def get_price_impact(self, dx: float) -> float:
+        """
+        Swap öncesi ve sonrası fiyat farkından 'price impact'i hesaplar (%).
+        """
+        p_before = self.price_xy
+        res = self.swap_x_for_y(dx)
+        p_after = res.price_after
+        # işlemi geri al (state'i bozmamak için)
+        self.x -= dx * (1 - self.fee)
+        self.y = self.k / self.x
+        impact = (p_after - p_before) / p_before * 100
+        return impact
 
+    def estimate_slippage(self, dx: float) -> float:
+        """
+        Slippage = (gerçek fiyat - beklenen fiyat) / beklenen fiyat (%)
+        """
+        p_expected = self.price_xy
+        res = self.swap_x_for_y(dx)
+        effective_price = dx / res.dy
+        # state'i geri al
+        self.x -= dx * (1 - self.fee)
+        self.y = self.k / self.x
+        slippage = (effective_price - p_expected) / p_expected * 100
+        return slippage
