@@ -52,56 +52,47 @@ jobs:
       - name: Run Forge tests
         run: forge test -vvv
 
-  deploy:
-    name: Deploy (Foundry)
-    runs-on: ubuntu-latest
-    needs: build
-    # sadece main branch'e push olduğunda ve build başarılıysa çalışsın
-    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
+deploy:
+  name: Deploy (Foundry)
+  runs-on: ubuntu-latest
+  needs: build
+  permissions:
+    contents: read
+  steps:
+    - uses: actions/checkout@v4
 
-    env:
-      # ---- Gerekli gizliler (Settings ▸ Secrets and variables ▸ Actions) ----
-      # SEPOLIA_RPC_URL         -> Sepolia (veya Holesky) RPC endpoint
-      # DEPLOYER_PRIVATE_KEY    -> 0x önekSİZ ham private key
-      # ETHERSCAN_API_KEY       -> (opsiyonel) Etherscan API anahtarı
-      RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
-      PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+    - name: Install Foundry (nightly)
+    # (build’dekini aynen kullan)
+      uses: foundry-rs/foundry-toolchain@v1
+      with:
+        version: nightly
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    # forge-std (deploy tarafında da!) 
+    - name: Install forge-std (try forge, fallback to git)
+      shell: bash
+      run: |
+        set -euo pipefail
+        mkdir -p lib
+        rm -rf lib/forge-std
+        if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
+          echo "forge install failed, falling back to git clone..."
+          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+        fi
 
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
+    # (opsiyonel) re-mapping foundry.toml’da olduğundan başka bir şey yapma
+    # - name: Show forge config
+    #   run: forge config
 
-      - name: Install forge-std
-        run: |
-          mkdir -p lib
-          forge install foundry-rs/forge-std --no-commit
-
-      - name: Deploy contract
-        run: |
-          forge script solidity/script/Deploy.s.sol:Deploy \
-            --rpc-url "$RPC_URL" \
-            --private-key "$PRIVATE_KEY" \
-            --broadcast -vvv
-
-      # (Opsiyonel) Doğrulama adımını istersen doldurabilirsin
-      # Aşağıdaki if, ETHERSCAN_API_KEY ayarlıysa çalışmasını sağlar
-      - name: Verify on Etherscan (optional)
-        if: env.ETHERSCAN_API_KEY != ''
-        run: |
-          echo "Eğer istersen buraya forge verify-contract komutunu ekleyelim."
-          # Örnek:
-          # forge verify-contract \
-          #   --chain sepolia \
-          #   --num-of-optimizations 200 \
-          #   --watch \
-          #   <DEPLOYED_CONTRACT_ADDRESS> \
-          #   <CONTRACT_PATH>:<CONTRACT_NAME> \
-          #   $ETHERSCAN_API_KEY
+    - name: Deploy contract
+      env:
+        ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
+        PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      run: |
+        forge script script/Deploy.s.sol:Deploy \
+          --rpc-url "$ETH_RPC_URL" \
+          --private-key "$PRIVATE_KEY" \
+          --broadcast \
+          --verify \
+          -vvvv
+     
