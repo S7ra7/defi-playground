@@ -1,25 +1,12 @@
 name: CI
+
 on:
   push:
   pull_request:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pip install -r requirements.txt
-      - run: PYTHONPATH=. pytest -q
-name: CI
-on:
-  push:
-  pull_request:
-
-jobs:
-  test:
+    name: Python Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,7 +17,7 @@ jobs:
       - run: PYTHONPATH=. pytest -q
 
   solidity:
-    name: Forge tests
+    name: Forge Tests
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -41,7 +28,7 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      - name: Install deps (forge-std)
+      - name: Install forge-std
         run: forge install --no-commit foundry-rs/forge-std
-      - name: Run forge tests
+      - name: Run Solidity tests
         run: forge test -vvv
