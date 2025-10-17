@@ -40,7 +40,8 @@ jobs:
       - name: Install forge-std
         run: |
           mkdir -p lib
-          forge install foundry-rs/forge-std --no-commit
+          forge install foundry-rs/forge-std
+
 
       # (İsteğe bağlı) Solidity/Foundry testleri
       - name: Run Forge tests
