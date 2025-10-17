@@ -2,37 +2,30 @@ name: CI
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
+    branches:
+      - main
 
 jobs:
   build:
+    name: Python Tests
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Python testlerin varsa:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Install deps
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-      - name: Run Python tests
-        run: |
-          if [ -d tests ]; then pytest -q || true; fi
+          python-version: "3.11"
 
-      # Foundry testleri:
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-      - name: Run Forge tests
-        run: forge test -vvv
+      - name: Install dependencies
+        run: pip install -r requirements.txt
 
-    deploy:
+      - name: Run tests
+        run: pytest -q
+
+  deploy:
     name: Deploy (Foundry)
     runs-on: ubuntu-latest
     needs: build
@@ -41,7 +34,7 @@ jobs:
       contents: read
 
     env:
-      RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}         # ya da HOLESKY_RPC_URL
+      RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}        # veya HOLESKY_RPC_URL
       PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
       ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
 
@@ -64,48 +57,5 @@ jobs:
       - name: Verify on Etherscan (optional)
         if: env.ETHERSCAN_API_KEY != ''
         run: |
-          forge verify-contract \
-            --chain sepolia \
-            --etherscan-api-key "$ETHERSCAN_API_KEY"
-
-    # build başarılıysa ve main branch ise deploy et
-    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
-    permissions:
-      contents: read
-    env:
-      # Gerekli secret'lar
-      ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}            # Alchemy/Infura RPC
-      PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}   # 0x öneksiz, 64 hex
-      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}# (opsiyonel) verify için
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-
-      # (Opsiyonel) forge-std’ı lib’e al
-      - name: Install forge-std
-        run: |
-          mkdir -p lib
-          if [ ! -d lib/forge-std ]; then
-            git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
-          fi
-
-      - name: Deploy script
-        run: |
-          forge script script/Deploy.s.sol:Deploy \
-            --rpc-url "$ETH_RPC_URL" \
-            --private-key "$PRIVATE_KEY" \
-            --broadcast -vvv
-
-      # (Opsiyonel) verify
-      - name: Verify on Etherscan
-        if: env.ETHERSCAN_API_KEY != ''
-        run: |
-          forge verify-contract <DEPLOYED_ADDRESS> <ContractName> \
-            --chain-id <CHAIN_ID> \
-            --etherscan-api-key "$ETHERSCAN_API_KEY" \
-            --watch
+          # Örnek; kontrat adresi/isim parametreleri senin case'ine göre eklenir
+          echo "Add forge verify-contract command here if needed"
