@@ -32,10 +32,42 @@ jobs:
       - name: Run Forge tests
         run: forge test -vvv
 
-  deploy:
+    deploy:
     name: Deploy (Foundry)
     runs-on: ubuntu-latest
     needs: build
+    if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+
+    env:
+      RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}         # ya da HOLESKY_RPC_URL
+      PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Deploy contract
+        run: |
+          forge script script/Deploy.s.sol:Deploy \
+            --rpc-url "$RPC_URL" \
+            --private-key "$PRIVATE_KEY" \
+            --broadcast -vvv
+
+      - name: Verify on Etherscan (optional)
+        if: env.ETHERSCAN_API_KEY != ''
+        run: |
+          forge verify-contract \
+            --chain sepolia \
+            --etherscan-api-key "$ETHERSCAN_API_KEY"
+
     # build başarılıysa ve main branch ise deploy et
     if: needs.build.result == 'success' && github.ref == 'refs/heads/main'
     permissions:
