@@ -28,6 +28,15 @@ jobs:
         with:
           version: nightly
 
+      - name: Install forge-std
+        working-directory: solidity
+        run: |
+        mkdir -p lib
+        # varsa tekrar indirme
+        if [ ! -d lib/forge-std ]; then
+        forge install foundry-rs/forge-std@v1.9.5 --no-git
+        fi
+
       - name: Run Forge tests
         working-directory: solidity
         run: forge test -vvvv
