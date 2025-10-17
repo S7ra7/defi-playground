@@ -35,3 +35,9 @@ jobs:
           ls -la lib
       - name: Run Solidity tests
         run: forge test -vvv
+
+  # ... mevcut adımlar ...
+
+  - name: Deploy simulation (Foundry script)
+    working-directory: solidity
+    run: forge script script/Deploy.s.sol -vvvv
