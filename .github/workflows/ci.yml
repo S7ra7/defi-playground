@@ -2,42 +2,36 @@ name: CI
 
 on:
   push:
-  pull_request:
 
 jobs:
-  test:
-    name: Python Tests
+  build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-      - run: pip install -r requirements.txt
-      - run: PYTHONPATH=. pytest -q
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  solidity:
-    name: Forge Tests
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: solidity
-    steps:
-      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Python tests
+        run: pytest -v
+
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
-      - name: Install forge-std
-        run: |
-          forge --version
-          forge install foundry-rs/forge-std -q
-          ls -la lib
-      - name: Run Solidity tests
-        run: forge test -vvv
 
-  # ... mevcut adımlar ...
+      - name: Run Forge tests
+        working-directory: solidity
+        run: forge test -vvvv
 
-  - name: Deploy simulation (Foundry script)
-    working-directory: solidity
-    run: forge script script/Deploy.s.sol -vvvv
+      - name: Deploy simulation (Foundry script)
+        working-directory: solidity
+        run: forge script script/Deploy.s.sol -vvvv
