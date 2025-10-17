@@ -40,21 +40,16 @@ jobs:
           forge --version
           solc --version
 
-# 2) forge-std: --no-commit YOK! (güncel forge ile)
-      - name: Install forge-std (via forge)
+  # forge-std: önce forge install dene; başarısız olursa git clone ile düş
+      - name: Install forge-std (try forge, fallback to git)
         run: |
+          set -euo pipefail
           mkdir -p lib
           rm -rf lib/forge-std
-          forge install foundry-rs/forge-std@v1.9.5 --quiet
-
-# 3) Fallback (forge install yine sorun çıkarırsa)
-      - name: Fallback: clone forge-std (if forge install fails)
-        if: ${{ failure() }}
-        run: |
-          mkdir -p lib
-          rm -rf lib/forge-std
-          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
-
+          if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
+            echo "forge install failed, falling back to git clone..."
+            git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+          fi
 
       # (İsteğe bağlı) Solidity/Foundry testleri
       - name: Run Forge tests
