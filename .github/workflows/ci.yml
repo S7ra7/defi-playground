@@ -31,24 +31,21 @@ jobs:
           python -V
           pytest -q
 
- # 1) Foundry'yi manuel kur (cache'i bypass)
+      # Foundry'yi resmi action ile kur (en güvenlisi)
       - name: Install Foundry (nightly)
-        run: |
-          curl -L https://foundry.paradigm.xyz | bash
-          ~/.foundry/bin/foundryup -v nightly
-          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
-          forge --version
-          solc --version
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
-  # forge-std: önce forge install dene; başarısız olursa git clone ile düş
+      # forge-std: önce forge install dene; başarısız olursa git clone ile düş
       - name: Install forge-std (try forge, fallback to git)
         run: |
           set -euo pipefail
           mkdir -p lib
           rm -rf lib/forge-std
           if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
-            echo "forge install failed, falling back to git clone..."
-            git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+          echo "forge install failed, falling back to git clone..."
+          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
           fi
 
       # (İsteğe bağlı) Solidity/Foundry testleri
