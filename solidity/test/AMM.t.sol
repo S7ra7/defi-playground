@@ -10,38 +10,44 @@ contract AMMTest is Test {
     MockERC20 tokenX;
     MockERC20 tokenY;
 
-    address user = address(0xBEEF);
+    address lp     = address(0xA11CE); // likidite sağlayıcı
+    address trader = address(0xBEEF);  // takas yapan
 
     function setUp() public {
-        // 3 argüman: name, symbol, decimals
         tokenX = new MockERC20("Token X", "TX", 18);
         tokenY = new MockERC20("Token Y", "TY", 18);
 
-        // AMM kurucusu IERC20 bekliyor -> cast et
+        // AMM kurucusu IERC20 bekliyor
         amm = new AMM(IERC20(address(tokenX)), IERC20(address(tokenY)));
 
-        // Kullanıcıya token bas
-        tokenX.mint(user, 1_000 ether);
-        tokenY.mint(user, 1_000 ether);
+        // LP'ye havuz için token bas
+        tokenX.mint(lp,     1_000 ether);
+        tokenY.mint(lp,     1_000 ether);
 
-        // Onaylar ve likidite
-        vm.startPrank(user);
+        // Trader'a swap için X bas
+        tokenX.mint(trader,   500 ether);
+
+        // LP havuza likidite ekler
+        vm.startPrank(lp);
         tokenX.approve(address(amm), type(uint256).max);
         tokenY.approve(address(amm), type(uint256).max);
         amm.addLiquidity(1_000 ether, 1_000 ether);
         vm.stopPrank();
+
+        // Trader AMM'ye onay verir
+        vm.startPrank(trader);
+        tokenX.approve(address(amm), type(uint256).max);
+        vm.stopPrank();
     }
 
     function testSwapXforY() public {
-        vm.startPrank(user);
-
-        // minDy toleransı ile 2 parametre ver
+        vm.startPrank(trader);
         uint256 dx = 100 ether;
         uint256 quoted = amm.getAmountOut(dx);
-        amm.swapXforY(dx, (quoted * 99) / 100); // %1 slippage
-
-        // Kullanıcının Y bakiyesi artmış olmalı
-        assertGt(tokenY.balanceOf(user), 900 ether);
+        amm.swapXforY(dx, (quoted * 99) / 100); // %1 slippage toleransı
         vm.stopPrank();
+
+        // Trader'ın Y bakiyesi artmış olmalı
+        assertGt(tokenY.balanceOf(trader), 0, "trader did not receive Y");
     }
 }
