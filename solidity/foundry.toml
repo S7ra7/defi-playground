@@ -8,3 +8,5 @@ solc_version = "0.8.20"
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 200
+[etherscan]
+key = "${ETHERSCAN_API_KEY}"
