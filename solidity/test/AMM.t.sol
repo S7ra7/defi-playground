@@ -10,25 +10,38 @@ contract AMMTest is Test {
     MockERC20 tokenX;
     MockERC20 tokenY;
 
+    address user = address(0xBEEF);
+
     function setUp() public {
+        // 3 argüman: name, symbol, decimals
         tokenX = new MockERC20("Token X", "TX", 18);
         tokenY = new MockERC20("Token Y", "TY", 18);
-        amm = new AMM(address(tokenX), address(tokenY));
 
-        tokenX.mint(address(this), 1e24);
-        tokenY.mint(address(this), 1e24);
+        // AMM kurucusu IERC20 bekliyor -> cast et
+        amm = new AMM(IERC20(address(tokenX)), IERC20(address(tokenY)));
 
+        // Kullanıcıya token bas
+        tokenX.mint(user, 1_000 ether);
+        tokenY.mint(user, 1_000 ether);
+
+        // Onaylar ve likidite
+        vm.startPrank(user);
         tokenX.approve(address(amm), type(uint256).max);
         tokenY.approve(address(amm), type(uint256).max);
+        amm.addLiquidity(1_000 ether, 1_000 ether);
+        vm.stopPrank();
     }
 
-    function testSwapForY() public {
-        amm.addLiquidity(1e21, 1e21);
+    function testSwapXforY() public {
+        vm.startPrank(user);
 
-        uint256 beforeY = tokenY.balanceOf(address(this));
-        amm.swapXforY(1e20);
-        uint256 afterY = tokenY.balanceOf(address(this));
+        // minDy toleransı ile 2 parametre ver
+        uint256 dx = 100 ether;
+        uint256 quoted = amm.getAmountOut(dx);
+        amm.swapXforY(dx, (quoted * 99) / 100); // %1 slippage
 
-        assertGt(afterY, beforeY, "Y token balance did not increase");
+        // Kullanıcının Y bakiyesi artmış olmalı
+        assertGt(tokenY.balanceOf(user), 900 ether);
+        vm.stopPrank();
     }
 }
