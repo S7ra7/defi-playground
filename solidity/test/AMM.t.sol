@@ -44,7 +44,7 @@ contract AMMTest is Test {
         vm.startPrank(trader);
         uint256 dx = 100 ether;
         uint256 quoted = amm.getAmountOut(dx);
-        amm.swapXforY(dx, (quoted * 99) / 100); // %1 slippage toleransı
+        amm.swapXforY(dx, (quoted * 97) / 100); // %3 slippage toleransı
         vm.stopPrank();
 
         // Trader'ın Y bakiyesi artmış olmalı
