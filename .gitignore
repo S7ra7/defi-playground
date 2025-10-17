@@ -1,1 +1,4 @@
-
+# foundry
+solidity/cache/
+solidity/out/
+solidity/lib/
