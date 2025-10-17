@@ -31,17 +31,30 @@ jobs:
           python -V
           pytest -q
 
-      # ---------- Foundry kurulum + forge-std ----------
-      - name: Install Foundry
-        uses: foundry-rs/foundry-toolchain@v1
-        with:
-          version: nightly
-          cache: false
+ # 1) Foundry'yi manuel kur (cache'i bypass)
+      - name: Install Foundry (nightly)
+        run: |
+          curl -L https://foundry.paradigm.xyz | bash
+          ~/.foundry/bin/foundryup -v nightly
+          echo "$HOME/.foundry/bin" >> $GITHUB_PATH
+          forge --version
+          solc --version
 
-      - name: Install forge-std
+# 2) forge-std: --no-commit YOK! (güncel forge ile)
+      - name: Install forge-std (via forge)
         run: |
           mkdir -p lib
-          forge install foundry-rs/forge-std
+          rm -rf lib/forge-std
+          forge install foundry-rs/forge-std@v1.9.5 --quiet
+
+# 3) Fallback (forge install yine sorun çıkarırsa)
+      - name: Fallback: clone forge-std (if forge install fails)
+        if: ${{ failure() }}
+        run: |
+          mkdir -p lib
+          rm -rf lib/forge-std
+          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+
 
       # (İsteğe bağlı) Solidity/Foundry testleri
       - name: Run Forge tests
