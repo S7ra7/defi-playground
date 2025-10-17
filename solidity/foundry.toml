@@ -9,4 +9,5 @@ evm_version = "paris"
 optimizer = true
 optimizer_runs = 200
 [etherscan]
-api_key = "${ETHERSCAN_API_KEY}"
+api_key = { sepolia = "${ETHERSCAN_API_KEY}" }
+
