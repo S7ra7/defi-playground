@@ -29,6 +29,9 @@ jobs:
         with:
           version: nightly
       - name: Install forge-std
-        run: forge install --no-commit foundry-rs/forge-std
+        run: |
+          forge --version
+          forge install foundry-rs/forge-std -q
+          ls -la lib
       - name: Run Solidity tests
         run: forge test -vvv
