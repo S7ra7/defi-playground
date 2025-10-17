@@ -6,33 +6,29 @@ import "../src/AMM.sol";
 import "../src/MockERC20.sol";
 
 contract AMMTest is Test {
-    MockERC20 X;
-    MockERC20 Y;
     AMM amm;
-    address user = address(0xBEEF);
+    MockERC20 tokenX;
+    MockERC20 tokenY;
 
     function setUp() public {
-        X = new MockERC20("X", "X");
-        Y = new MockERC20("Y", "Y");
-        amm = new AMM(IERC20(address(X)), IERC20(address(Y)));
+        tokenX = new MockERC20("Token X", "TX", 18);
+        tokenY = new MockERC20("Token Y", "TY", 18);
+        amm = new AMM(address(tokenX), address(tokenY));
 
-        X.mint(user, 1_000 ether);
-        Y.mint(user, 1_000 ether);
+        tokenX.mint(address(this), 1e24);
+        tokenY.mint(address(this), 1e24);
 
-        vm.startPrank(user);
-        X.approve(address(amm), type(uint256).max);
-        Y.approve(address(amm), type(uint256).max);
-        amm.addLiquidity(1_000 ether, 1_000 ether);
-        vm.stopPrank();
+        tokenX.approve(address(amm), type(uint256).max);
+        tokenY.approve(address(amm), type(uint256).max);
     }
 
-    function testSwapXforY() public {
-        vm.startPrank(user);
-        uint256 dy = amm.getAmountOut(100 ether);
-        uint256 yBefore = Y.balanceOf(user);
-        amm.swapXforY(100 ether, dy * 99 / 100); // %1 slippage toleransı
-        uint256 yAfter = Y.balanceOf(user);
-        assertGt(yAfter, yBefore);
-        vm.stopPrank();
+    function testSwapForY() public {
+        amm.addLiquidity(1e21, 1e21);
+
+        uint256 beforeY = tokenY.balanceOf(address(this));
+        amm.swapXforY(1e20);
+        uint256 afterY = tokenY.balanceOf(address(this));
+
+        assertGt(afterY, beforeY, "Y token balance did not increase");
     }
 }
