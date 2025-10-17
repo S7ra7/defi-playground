@@ -43,7 +43,6 @@ jobs:
           mkdir -p lib
           forge install foundry-rs/forge-std
 
-
       # (İsteğe bağlı) Solidity/Foundry testleri
       - name: Run Forge tests
         run: forge test -vvv
