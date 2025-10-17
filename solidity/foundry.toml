@@ -1,6 +1,6 @@
 [profile.default]
-src = "src"
-test = "test"
+src = "solidity/src"
+test = "solidity/test"
 out = "out"
 libs = ["lib"]
 remappings = ["forge-std/=lib/forge-std/src/"]
