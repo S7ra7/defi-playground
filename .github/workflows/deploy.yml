@@ -1,0 +1,92 @@
+name: Deploy to Testnet
+
+on:
+  workflow_dispatch:
+    inputs:
+      network:
+        description: "Which network to deploy to?"
+        required: true
+        type: choice
+        options: [sepolia, holesky]
+        default: sepolia
+      verify:
+        description: "Verify on Etherscan?"
+        required: true
+        type: boolean
+        default: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Show versions
+        run: |
+          forge --version
+          cast --version
+
+      - name: Select network env
+        shell: bash
+        run: |
+          if [ "${{ github.event.inputs.network }}" = "sepolia" ]; then
+            echo "RPC_URL=${{ secrets.SEPOLIA_RPC_URL }}" >> $GITHUB_ENV
+            echo "CHAIN_ID=11155111" >> $GITHUB_ENV
+          else
+            echo "RPC_URL=${{ secrets.HOLESKY_RPC_URL }}" >> $GITHUB_ENV
+            echo "CHAIN_ID=17000" >> $GITHUB_ENV
+          fi
+
+      - name: Build
+        run: forge build
+
+      - name: Deploy script (with/without verify)
+        id: deploy
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        shell: bash
+        run: |
+          set -e
+          extra=""
+          if [ "${{ github.event.inputs.verify }}" = "true" ] && [ -n "$ETHERSCAN_API_KEY" ]; then
+            extra="--verify --verifier etherscan"
+          fi
+
+          # NOTE: script/Deploy.s.sol içinde broadcast başlatıldığı varsayılıyor.
+          forge script script/Deploy.s.sol:Deploy \
+            --rpc-url "$RPC_URL" \
+            --private-key "${{ secrets.DEPLOYER_PRIVATE_KEY }}" \
+            --broadcast \
+            --chain-id "$CHAIN_ID" \
+            --slow $extra
+
+      - name: Show deployed addresses in summary
+        if: always()
+        shell: bash
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y jq
+          RUN_JSON="broadcast/Deploy.s.sol/$CHAIN_ID/run-latest.json"
+          if [ -f "$RUN_JSON" ]; then
+            echo "### Deployed Contracts" >> $GITHUB_STEP_SUMMARY
+            jq -r '
+              .transactions[]
+              | select(.contractAddress!=null)
+              | "- \(.contractName): `\(.contractAddress)`"
+            ' "$RUN_JSON" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Run json not found at $RUN_JSON" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Upload broadcast artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: broadcast-${{ github.event.inputs.network }}
+          path: broadcast/
