@@ -58,16 +58,17 @@ deploy:
   needs: build
   permissions:
     contents: read
+
   steps:
-    - uses: actions/checkout@v4
+    - name: Checkout
+      uses: actions/checkout@v4
 
     - name: Install Foundry (nightly)
-    # (build’dekini aynen kullan)
       uses: foundry-rs/foundry-toolchain@v1
       with:
         version: nightly
 
-    # forge-std (deploy tarafında da!) 
+    # >>> ÖNEMLİ: Deploy tarafında da forge-std kuruyoruz
     - name: Install forge-std (try forge, fallback to git)
       shell: bash
       run: |
@@ -79,15 +80,17 @@ deploy:
           git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
         fi
 
-    # (opsiyonel) re-mapping foundry.toml’da olduğundan başka bir şey yapma
+    # (İstersen kontrol amaçlı)
     # - name: Show forge config
     #   run: forge config
 
     - name: Deploy contract
+      # repo kökünden çalışsın (foundry.toml burada)
+      working-directory: .
       env:
         ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
         PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }} # opsiyonel
       run: |
         forge script script/Deploy.s.sol:Deploy \
           --rpc-url "$ETH_RPC_URL" \
@@ -95,4 +98,3 @@ deploy:
           --broadcast \
           --verify \
           -vvvv
-     
