@@ -75,19 +75,18 @@ jobs:
             git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
           fi
 
-      - name: Deploy contract
-        working-directory: .
-        env:
-          ETH_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
-          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-
-        shell: bash
-        run: |
-          set -euo pipefail
-          forge script solidity/script/Deploy.s.sol:Deploy \
-            --rpc-url "$ETH_RPC_URL" \
-            --private-key "$PRIVATE_KEY" \
-            --broadcast \
-            --verify \
-            -vvvv
+     - name: Deploy contract
+  working-directory: .
+  env:
+    ETH_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+    PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+    ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+  shell: bash
+  run: |
+    set -euo pipefail
+    forge script solidity/script/Deploy.s.sol:Deploy \
+      --rpc-url "$ETH_RPC_URL" \
+      --private-key "$PRIVATE_KEY" \
+      --broadcast \
+      --verify \
+      -vvvv
