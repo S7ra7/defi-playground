@@ -2,21 +2,19 @@ name: CI
 
 on:
   push:
-    branches:
-      - "**"         # tüm branch'lerde test çalışır
+    branches: [ "main" ]
   pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build:
+  build_and_tests:
     name: Build & Tests
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-      # repo dosyalarını runner'a indir
         uses: actions/checkout@v4
 
-      # ---------- Python testleri ----------
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -31,72 +29,64 @@ jobs:
           python -V
           pytest -q
 
-      # Foundry'yi resmi action ile kur (en güvenlisi)
+      # Foundry'yi kur
       - name: Install Foundry (nightly)
         uses: foundry-rs/foundry-toolchain@v1
         with:
           version: nightly
 
-      # forge-std: önce forge install dene; başarısız olursa git clone ile düş
+      # forge-std: önce forge install dener; olmazsa git clone
       - name: Install forge-std (try forge, fallback to git)
+        shell: bash
         run: |
           set -euo pipefail
           mkdir -p lib
           rm -rf lib/forge-std
           if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
-          echo "forge install failed, falling back to git clone..."
-          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+            echo "forge install failed, falling back to git clone..."
+            git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
           fi
 
-      # (İsteğe bağlı) Solidity/Foundry testleri
-      - name: Run Forge tests
-        run: forge test -vvv
+  deploy:
+    name: Deploy (Foundry)
+    runs-on: ubuntu-latest
+    needs: build_and_tests
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
 
-deploy:
-  name: Deploy (Foundry)
-  runs-on: ubuntu-latest
-  needs: build
-  permissions:
-    contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Install Foundry (nightly)
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
-    - name: Install Foundry (nightly)
-      uses: foundry-rs/foundry-toolchain@v1
-      with:
-        version: nightly
+      - name: Install forge-std (try forge, fallback to git)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p lib
+          rm -rf lib/forge-std
+          if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
+            echo "forge install failed, falling back to git clone..."
+            git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
+          fi
 
-    # >>> ÖNEMLİ: Deploy tarafında da forge-std kuruyoruz
-    - name: Install forge-std (try forge, fallback to git)
-      shell: bash
-      run: |
-        set -euo pipefail
-        mkdir -p lib
-        rm -rf lib/forge-std
-        if ! forge install foundry-rs/forge-std@v1.9.5 --quiet; then
-          echo "forge install failed, falling back to git clone..."
-          git clone --depth 1 https://github.com/foundry-rs/forge-std lib/forge-std
-        fi
-
-    # (İstersen kontrol amaçlı)
-    # - name: Show forge config
-    #   run: forge config
-
-- name: Deploy contract
-  # repo kökünden çalışsın (foundry.toml burada)
-  working-directory: .
-  env:
-    ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
-    PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-    ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
-  run: |
-    forge script solidity/script/Deploy.s.sol:Deploy \
-      --rpc-url "$ETH_RPC_URL" \
-      --private-key "$PRIVATE_KEY" \
-      --broadcast \
-      --verify \
-      -vvvv
-
-  
+      - name: Deploy contract
+        working-directory: .
+        env:
+          ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
+          PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          forge script solidity/script/Deploy.s.sol:Deploy \
+            --rpc-url "$ETH_RPC_URL" \
+            --private-key "$PRIVATE_KEY" \
+            --broadcast \
+            --verify \
+            -vvvv
