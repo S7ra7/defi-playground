@@ -84,17 +84,19 @@ deploy:
     # - name: Show forge config
     #   run: forge config
 
-    - name: Deploy contract
-      # repo kökünden çalışsın (foundry.toml burada)
-      working-directory: .
-      env:
-        ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
-        PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
-        ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }} # opsiyonel
-      run: |
-        forge script script/Deploy.s.sol:Deploy \
-          --rpc-url "$ETH_RPC_URL" \
-          --private-key "$PRIVATE_KEY" \
-          --broadcast \
-          --verify \
-          -vvvv
+- name: Deploy contract
+  # repo kökünden çalışsın (foundry.toml burada)
+  working-directory: .
+  env:
+    ETH_RPC_URL: ${{ secrets.ETH_RPC_URL }}
+    PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+    ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+  run: |
+    forge script solidity/script/Deploy.s.sol:Deploy \
+      --rpc-url "$ETH_RPC_URL" \
+      --private-key "$PRIVATE_KEY" \
+      --broadcast \
+      --verify \
+      -vvvv
+
+  
