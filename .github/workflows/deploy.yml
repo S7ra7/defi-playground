@@ -107,11 +107,17 @@ jobs:
           echo "📁 Listing files:"
           ls -R | grep "Deploy.s.sol" || true
  
-- name: Deploy contract
-  run: |
-    set -euo pipefail
-    forge script solidity/script/Deploy.s.sol:Deploy \
-      --rpc-url ${{ secrets.SEPOLIA_RPC_URL }} \
-      --private-key ${{ secrets.DEPLOYER_PRIVATE_KEY }} \
-      --broadcast -vvvv
+      - name: Deploy contract
+        working-directory: solidity
+        run: |
+          set -euo pipefail
+          echo "Current directory: $(pwd)"
+          echo "Listing:"
+          ls -R script || true
+          forge script script/Deploy.s.sol:Deploy \
+            --root .. \
+            --rpc-url "${{ secrets.SEPOLIA_RPC_URL }}" \
+            --private-key "${{ secrets.DEPLOYER_PRIVATE_KEY }}" \
+            --broadcast -vvvv
+
 
