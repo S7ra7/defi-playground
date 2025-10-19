@@ -99,6 +99,14 @@ jobs:
         with:
           name: broadcast-${{ github.event.inputs.network }}
           path: broadcast/
+
+      - name: Debug layout
+        run: |
+          echo "📂 Current directory:"
+          pwd
+          echo "📁 Listing files:"
+          ls -R | grep "Deploy.s.sol" || true
+ 
 - name: Deploy contract
   run: |
     set -euo pipefail
