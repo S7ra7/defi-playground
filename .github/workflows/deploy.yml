@@ -107,7 +107,7 @@ jobs:
           echo "📁 Listing files:"
           ls -R | grep "Deploy.s.sol" || true
  
-      - name: Deploy contract
+            - name: Deploy contract
         working-directory: solidity
         run: |
           set -euo pipefail
@@ -119,5 +119,4 @@ jobs:
             --rpc-url "${{ secrets.SEPOLIA_RPC_URL }}" \
             --private-key "${{ secrets.DEPLOYER_PRIVATE_KEY }}" \
             --broadcast -vvvv
-
 
