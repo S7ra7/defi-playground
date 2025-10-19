@@ -8,10 +8,8 @@ solc_version = "0.8.20"
 evm_version = "paris"
 optimizer = true
 optimizer_runs = 200
+[rpc_endpoints]
+sepolia = "${SEPOLIA_RPC_URL}"
 
 [etherscan]
 api_key = { key = "${ETHERSCAN_API_KEY}" }
-
-[rpc_endpoints]
-sepolia = "${SEPOLIA_RPC_URL}"
-holesky = "${HOLESKY_RPC_URL}"
