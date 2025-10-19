@@ -14,6 +14,15 @@ on:
         required: true
         type: boolean
         default: false
+- name: Test RPC endpoint (eth_blockNumber)
+  shell: pwsh
+  run: |
+    $uri  = "${{ secrets.SEPOLIA_RPC_URL }}"
+    $body = @{
+      jsonrpc = "2.0"; id = 1; method = "eth_blockNumber"; params = @()
+    } | ConvertTo-Json
+    $res = Invoke-RestMethod -Method Post -Uri $uri -ContentType "application/json" -Body $body
+    Write-Host "RPC OK, result:" $res.result
 
 jobs:
   deploy:
