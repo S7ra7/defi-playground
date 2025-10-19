@@ -90,3 +90,11 @@ jobs:
         with:
           name: broadcast-${{ github.event.inputs.network }}
           path: broadcast/
+- name: Deploy contract
+  run: |
+    forge script script/Deploy.s.sol:Deploy \
+      --rpc-url "${{ secrets.SEPOLIA_RPC_URL }}" \
+      --private-key "${{ secrets.DEPLOYER_PRIVATE_KEY }}" \
+      --chain 11155111 \
+      --broadcast \
+      --verify -vvvv
