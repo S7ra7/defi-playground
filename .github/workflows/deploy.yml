@@ -106,17 +106,30 @@ jobs:
           pwd
           echo "📁 Listing files:"
           ls -R | grep "Deploy.s.sol" || true
- 
-            - name: Deploy contract
+
+      - name: Deploy contract
+        # Foundry.toml 'solidity/' klasöründe; script de 'solidity/script/Deploy.s.sol'
         working-directory: solidity
+        env:
+          SEPOLIA_RPC_URL: ${{ secrets.SEPOLIA_RPC_URL }}
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.DEPLOYER_PRIVATE_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
         run: |
-          set -euo pipefail
-          echo "Current directory: $(pwd)"
-          echo "Listing:"
-          ls -R script || true
+          set -euxo pipefail
+
+          echo "PWD: $(pwd)"
+          echo "Tree under 'solidity/':"
+          ls -R || true
+
+          # Ön-kontrol: Secret’lar boş mu?
+          [ -n "$SEPOLIA_RPC_URL" ] || { echo "ERROR: SEPOLIA_RPC_URL is empty"; exit 1; }
+          [ -n "$DEPLOYER_PRIVATE_KEY" ] || { echo "ERROR: DEPLOYER_PRIVATE_KEY is empty"; exit 1; }
+
+          # Derleme/dağıtım
           forge script script/Deploy.s.sol:Deploy \
-            --root .. \
-            --rpc-url "${{ secrets.SEPOLIA_RPC_URL }}" \
-            --private-key "${{ secrets.DEPLOYER_PRIVATE_KEY }}" \
-            --broadcast -vvvv
+            --rpc-url "$SEPOLIA_RPC_URL" \
+            --private-key "$DEPLOYER_PRIVATE_KEY" \
+            --broadcast -vvvv \
+            --verify --etherscan-api-key "$ETHERSCAN_API_KEY"
+ 
 
